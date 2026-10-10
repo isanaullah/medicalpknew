@@ -2,36 +2,45 @@
 
 namespace App\Models;
 
-use App\Models\BlogArticle;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class BlogCategory extends Model
 {
-  use HasFactory, SoftDeletes;
+    use HasFactory, SoftDeletes;
 
-  /**
-   * The attributes that are mass assignable.
-   *
-   * @var array
-   */
-  protected $fillable = [
-    'page_title',
-    'meta_desc',
-    'title',
-    'slug',
-    'image',
-    'description',
-    'status',
-  ];
+    protected $fillable = [
+        'page_title',
+        'meta_desc',
+        'title',
+        'slug',
+        'image',
+        'description',
+        'views_count',
+        'status',
+    ];
 
-  /**
-   * Categories relation to articles
-   *
-   */
-  public function articles()
-  {
-    return $this->hasMany(BlogArticle::class);
-  }
+    protected $casts = [
+        'status' => 'boolean',
+        'views_count' => 'integer',
+    ];
+
+    public function articles()
+    {
+        return $this->hasMany(BlogArticle::class, 'category_id');
+    }
+
+    public function scopeActive($query)
+    {
+        return $query->where('status', 1);
+    }
+
+    public function getImageUrlAttribute()
+    {
+        if ($this->image && $this->image != 'blog/category/no_img.jpg') {
+            return asset('storage/' . $this->image);
+        }
+        return asset('storage/blog/category/no_img.jpg');
+    }
 }

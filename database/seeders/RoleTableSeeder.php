@@ -30,9 +30,9 @@ class RoleTableSeeder extends Seeder
         'status'      => 1,
       ],
       [
-        'name'        => 'User',
-        'slug'        => 'user',
-        'description' => 'User Role',
+        'name'        => 'Student',
+        'slug'        => 'student',
+        'description' => 'Student Role',
         'level'       => 1,
         'status'      => 1,
       ],
@@ -67,7 +67,7 @@ class RoleTableSeeder extends Seeder
           foreach ($permissions as $permission) {
             $permission_check = explode('.', $permission->slug);
 
-            if ($permission_check[0] == 'user') {
+            if ($permission_check[0] == 'student') {
               continue;
             }
             $newRole->attachPermission($permission);
@@ -75,11 +75,11 @@ class RoleTableSeeder extends Seeder
         }
 
         // Attach permission to user role
-        if ($role['slug'] == 'user') {
+        if ($role['slug'] == 'student') {
           foreach ($permissions as $permission) {
             $permission_check = explode('.', $permission->slug);
 
-            if ($permission_check[0] != 'user') {
+            if ($permission_check[0] != 'student') {
               continue;
             }
             $newRole->attachPermission($permission);

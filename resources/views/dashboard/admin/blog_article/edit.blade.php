@@ -2,123 +2,156 @@
 
 @section('page_title', 'Edit Blog Article')
 
-@section('content')
-<div class="content-wrapper">
-  <!-- Content Header (Page header) -->
-  <section class="content-header">
-    <div class="container-fluid">
-      <div class="row mb-2">
-        <div class="col-sm-6">
-          <h1>Hi Admin Welcome Back</h1>
-        </div>
-        <div class="col-sm-6">
-          <ol class="breadcrumb float-sm-right">
-            <li class="breadcrumb-item"><a href="{{ url('/admin') }}">Dashboard</a></li>
-            <li class="breadcrumb-item"><a href="{{ route('blog.category.view') }}">{{ $category->title }}</a></li>
-            <li class="breadcrumb-item"><a href="{{ route('blog.article.view', ['id' => $category->id]) }}">Blog
-                Articles</a></li>
-            <li class="breadcrumb-item active">Edit</li>
-          </ol>
-        </div>
-      </div>
-    </div><!-- /.container-fluid -->
-  </section>
-
-  <!-- Main content -->
-  <section class="content">
-    <div class="container-fluid">
-      <div class="row">
-        <!-- left column -->
-        <div class="col-md-12">
-          <!-- Messages -->
-          @include('dashboard.admin.includes.messages')
-
-          <!-- general form elements -->
-          <div class="card">
-            <div class="card-header">
-              <h3 class="card-title">Edit Blog Article</h3>
+@section('admin-content')
+<div class="main-content">
+    <section class="section">
+        <div class="section-header">
+            <h1><i class="fas fa-edit"></i> {{ __('Edit Blog Article') }}</h1>
+            <div class="section-header-breadcrumb">
+                <div class="breadcrumb-item active">
+                    <a href="{{ route('admin.dashboard') }}">{{ __('Dashboard') }}</a>
+                </div>
+                <div class="breadcrumb-item">
+                    <a href="{{ route('blog.category.view') }}">{{ __('Blog Categories') }}</a>
+                </div>
+                <div class="breadcrumb-item">
+                    <a href="{{ route('blog.article.view', $category->id) }}">{{ __('Articles') }}</a>
+                </div>
+                <div class="breadcrumb-item">{{ __('Edit') }}</div>
             </div>
-            <!-- /.card-header -->
-            <!-- form start -->
-            <form action="{{ route('blog.article.update', ['id' => $article->id]) }}" method="POST"
-              enctype="multipart/form-data">
-              @csrf
-              @method('PUT')
-              <input type="hidden" name="category_id" value="{{ $category->id }}">
-              <div class="card-body">
-                <div class="form-group">
-                  <label for="inputPageTitle">Title</label>
-                  <input type="text" name="page_title" class="form-control" id="inputPageTitle"
-                    placeholder="Enter page title" value="{{ $article->page_title }}">
-                </div>
-
-                <div class="form-group">
-                  <label for="inputMeta">Meta Description</label>
-                  <textarea name="meta_desc" id="inputMeta" rows="3"
-                    class="form-control">{{ $article->meta_desc }}</textarea>
-                </div>
-
-                <div class="form-group">
-                  <label for="inputTitle">Title</label>
-                  <input type="text" name="title" class="form-control" id="inputTitle" placeholder="Enter title"
-                    value="{{ $article->title }}">
-                </div>
-
-                <div class="form-group">
-                  <label for="editor">Description</label>
-                  <textarea name="description" id="editor" rows="3"
-                    class="form-control">{{ $article->description }}</textarea>
-                </div>
-
-                <div class="form-group">
-                  <label for="inputFile">Photo</label>
-                  <input type="file" name="image" class="form-control" id="inputFile">
-                  <figure class="figure">
-                    <img src="{{ url('/storage/'.$article->image) }}" class="figure-img img-fluid rounded img-thumbnail"
-                      alt="Photo">
-                  </figure>
-                </div>
-
-                <div class="form-group">
-                  <label for="inputStatus">Status</label>
-                  <select class="form-control" name="status" id="inputStatus">
-                    <option value="1" @if($article->status == 1) {{ __('selected') }} @endif>Active</option>
-                    <option value="0" @if($article->status == 0) {{ __('selected') }} @endif>Deactive</option>
-                  </select>
-                </div>
-              </div>
-              <!-- /.card-body -->
-
-              <div class="card-footer">
-                <button type="submit" class="btn btn-primary">Save</button>
-                <a href="{{ route('blog.article.view', ['id' => $category->id]) }}"
-                  class="btn btn-default float-right">Cancel</a>
-              </div>
-            </form>
-          </div>
-          <!-- /.card -->
         </div>
-        <!--/.col (left) -->
-      </div>
-      <!-- /.row -->
-    </div><!-- /.container-fluid -->
-  </section>
-  <!-- /.content -->
-</div>
-@endsection
 
-@section('bottom_script')
-<!-- CKEditor -->
-<script src="https://cdn.ckeditor.com/ckeditor5/29.1.0/classic/ckeditor.js"></script>
-<script>
-  // CKEditor configuration //
-  ClassicEditor.create(document.querySelector("#editor"))
-      .then((editor) => {
-          console.log(editor);
-      })
-      .catch((error) => {
-          console.error(error);
-      });
-  // END / CKEditor configuration //
-</script>
+        <div class="section-body">
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4>{{ __('Edit Article') }}</h4>
+                        </div>
+                        <div class="card-body">
+                            <form action="{{ route('blog.article.update', $article->id) }}" method="POST" enctype="multipart/form-data">
+                                @csrf
+                                @method('PUT')
+
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label for="title">{{ __('Article Title') }} <span class="text-danger">*</span></label>
+                                            <input type="text"
+                                                   name="title"
+                                                   class="form-control @error('title') is-invalid @enderror"
+                                                   id="title"
+                                                   placeholder="Enter article title"
+                                                   value="{{ old('title', $article->title) }}"
+                                                   required>
+                                            @error('title')
+                                                <span class="invalid-feedback">{{ $message }}</span>
+                                            @enderror
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="page_title">{{ __('Page Title (SEO)') }}</label>
+                                            <input type="text"
+                                                   name="page_title"
+                                                   class="form-control @error('page_title') is-invalid @enderror"
+                                                   id="page_title"
+                                                   placeholder="Enter page title for SEO"
+                                                   value="{{ old('page_title', $article->page_title) }}">
+                                            @error('page_title')
+                                                <span class="invalid-feedback">{{ $message }}</span>
+                                            @enderror
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="status">{{ __('Status') }}</label>
+                                            <select name="status" class="form-control @error('status') is-invalid @enderror" id="status">
+                                                <option value="1" {{ old('status', $article->status) == '1' ? 'selected' : '' }}>Active</option>
+                                                <option value="0" {{ old('status', $article->status) == '0' ? 'selected' : '' }}>Inactive</option>
+                                            </select>
+                                            @error('status')
+                                                <span class="invalid-feedback">{{ $message }}</span>
+                                            @enderror
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label for="meta_desc">{{ __('Meta Description (SEO)') }}</label>
+                                            <textarea name="meta_desc"
+                                                      class="form-control @error('meta_desc') is-invalid @enderror"
+                                                      id="meta_desc"
+                                                      rows="2"
+                                                      placeholder="Enter meta description for SEO">{{ old('meta_desc', $article->meta_desc) }}</textarea>
+                                            @error('meta_desc')
+                                                <span class="invalid-feedback">{{ $message }}</span>
+                                            @enderror
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label for="description">{{ __('Description') }}</label>
+                                            <textarea name="description"
+                                                      class="form-control @error('description') is-invalid @enderror"
+                                                      id="description"
+                                                      rows="6"
+                                                      placeholder="Enter article content">{{ old('description', $article->description) }}</textarea>
+                                            @error('description')
+                                                <span class="invalid-feedback">{{ $message }}</span>
+                                            @enderror
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="image">{{ __('Featured Image') }}</label>
+                                            @if($article->image && $article->image != 'blog/article/no_img.jpg')
+                                                <div class="mb-2">
+                                                    <img src="{{ asset('storage/' . $article->image) }}"
+                                                         alt="{{ $article->title }}"
+                                                         width="80"
+                                                         height="80"
+                                                         style="object-fit: cover; border-radius: 5px;">
+                                                    <br>
+                                                    <small class="text-muted">Current image</small>
+                                                </div>
+                                            @endif
+                                            <input type="file"
+                                                   name="image"
+                                                   class="form-control @error('image') is-invalid @enderror"
+                                                   id="image"
+                                                   accept="image/*">
+                                            <small class="text-muted">Max 2MB (Leave empty to keep current)</small>
+                                            @error('image')
+                                                <span class="invalid-feedback">{{ $message }}</span>
+                                            @enderror
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="alert alert-info mt-3">
+                                    <i class="fas fa-info-circle"></i>
+                                    <strong>Current Slug:</strong> <code>{{ $article->slug }}</code> (Auto-generated)
+                                </div>
+
+                                <div class="form-group mt-4">
+                                    <button type="submit" class="btn btn-primary btn-lg">
+                                        <i class="fas fa-save"></i> {{ __('Update Article') }}
+                                    </button>
+                                    <a href="{{ route('blog.article.view', $category->id) }}" class="btn btn-secondary btn-lg">
+                                        <i class="fas fa-times"></i> {{ __('Cancel') }}
+                                    </a>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
 @endsection

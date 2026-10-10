@@ -2,115 +2,144 @@
 
 @section('page_title', 'Add Blog Article')
 
-@section('content')
-<div class="content-wrapper">
-  <!-- Content Header (Page header) -->
-  <section class="content-header">
-    <div class="container-fluid">
-      <div class="row mb-2">
-        <div class="col-sm-6">
-          <h1>Hi Admin Welcome Back</h1>
-        </div>
-        <div class="col-sm-6">
-          <ol class="breadcrumb float-sm-right">
-            <li class="breadcrumb-item"><a href="{{ url('/admin') }}">Dashboard</a></li>
-            <li class="breadcrumb-item"><a href="{{ route('blog.category.view') }}">{{ $category->title }}</a></li>
-            <li class="breadcrumb-item"><a href="{{ route('blog.article.view', ['id' => $category->id]) }}">Blog
-                Articles</a></li>
-            <li class="breadcrumb-item active">Add</li>
-          </ol>
-        </div>
-      </div>
-    </div><!-- /.container-fluid -->
-  </section>
-
-  <!-- Main content -->
-  <section class="content">
-    <div class="container-fluid">
-      <div class="row">
-        <!-- left column -->
-        <div class="col-md-12">
-          <!-- Messages -->
-          @include('dashboard.admin.includes.messages')
-
-          <!-- general form elements -->
-          <div class="card">
-            <div class="card-header">
-              <h3 class="card-title">Add Blog Article</h3>
+@section('admin-content')
+<div class="main-content">
+    <section class="section">
+        <div class="section-header">
+            <h1><i class="fas fa-plus-circle"></i> {{ __('Add Blog Article') }}</h1>
+            <div class="section-header-breadcrumb">
+                <div class="breadcrumb-item active">
+                    <a href="{{ route('admin.dashboard') }}">{{ __('Dashboard') }}</a>
+                </div>
+                <div class="breadcrumb-item">
+                    <a href="{{ route('blog.category.view') }}">{{ __('Blog Categories') }}</a>
+                </div>
+                <div class="breadcrumb-item">
+                    <a href="{{ route('blog.article.view', $category->id) }}">{{ __('Articles') }}</a>
+                </div>
+                <div class="breadcrumb-item">{{ __('Add New') }}</div>
             </div>
-            <!-- /.card-header -->
-            <!-- form start -->
-            <form action="{{ route('blog.article.create', ['id' => $category->id]) }}" method="POST"
-              enctype="multipart/form-data">
-              @csrf
-              <div class="card-body">
-                <div class="form-group">
-                  <label for="inputPageTitle">Title</label>
-                  <input type="text" name="page_title" class="form-control" id="inputPageTitle"
-                    placeholder="Enter page title">
-                </div>
-
-                <div class="form-group">
-                  <label for="inputMeta">Meta Description</label>
-                  <textarea name="meta_desc" id="inputMeta" rows="3" class="form-control"></textarea>
-                </div>
-
-                <div class="form-group">
-                  <label for="inputTitle">Title</label>
-                  <input type="text" name="title" class="form-control" id="inputTitle" placeholder="Enter title">
-                </div>
-
-                <div class="form-group">
-                  <label for="editor">Description</label>
-                  <textarea name="description" id="editor" rows="3" class="form-control"></textarea>
-                </div>
-
-                <div class="form-group">
-                  <label for="inputFile">Photo</label>
-                  <input type="file" name="image" class="form-control" id="inputFile">
-                </div>
-
-                <div class="form-group">
-                  <label for="inputStatus">Status</label>
-                  <select class="form-control" name="status" id="inputStatus">
-                    <option value="1">Active</option>
-                    <option value="0">Deactive</option>
-                  </select>
-                </div>
-              </div>
-              <!-- /.card-body -->
-
-              <div class="card-footer">
-                <button type="submit" class="btn btn-primary">Save</button>
-                <a href="{{ route('blog.article.view', ['id' => $category->id]) }}"
-                  class="btn btn-default float-right">Cancel</a>
-              </div>
-            </form>
-          </div>
-          <!-- /.card -->
         </div>
-        <!--/.col (left) -->
-      </div>
-      <!-- /.row -->
-    </div><!-- /.container-fluid -->
-  </section>
-  <!-- /.content -->
+
+        <div class="section-body">
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4>{{ __('Add Article to: ') }} <span class="text-primary">{{ $category->title }}</span></h4>
+                        </div>
+                        <div class="card-body">
+                            <form action="{{ route('blog.article.create', $category->id) }}" method="POST" enctype="multipart/form-data">
+                                @csrf
+
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label for="title">{{ __('Article Title') }} <span class="text-danger">*</span></label>
+                                            <input type="text"
+                                                   name="title"
+                                                   class="form-control @error('title') is-invalid @enderror"
+                                                   id="title"
+                                                   placeholder="Enter article title"
+                                                   value="{{ old('title') }}"
+                                                   required>
+                                            @error('title')
+                                                <span class="invalid-feedback">{{ $message }}</span>
+                                            @enderror
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="page_title">{{ __('Page Title (SEO)') }}</label>
+                                            <input type="text"
+                                                   name="page_title"
+                                                   class="form-control @error('page_title') is-invalid @enderror"
+                                                   id="page_title"
+                                                   placeholder="Enter page title for SEO"
+                                                   value="{{ old('page_title') }}">
+                                            @error('page_title')
+                                                <span class="invalid-feedback">{{ $message }}</span>
+                                            @enderror
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="status">{{ __('Status') }}</label>
+                                            <select name="status" class="form-control @error('status') is-invalid @enderror" id="status">
+                                                <option value="1" {{ old('status') == '1' ? 'selected' : '' }}>Active</option>
+                                                <option value="0" {{ old('status') == '0' ? 'selected' : '' }}>Inactive</option>
+                                            </select>
+                                            @error('status')
+                                                <span class="invalid-feedback">{{ $message }}</span>
+                                            @enderror
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label for="meta_desc">{{ __('Meta Description (SEO)') }}</label>
+                                            <textarea name="meta_desc"
+                                                      class="form-control @error('meta_desc') is-invalid @enderror"
+                                                      id="meta_desc"
+                                                      rows="2"
+                                                      placeholder="Enter meta description for SEO">{{ old('meta_desc') }}</textarea>
+                                            @error('meta_desc')
+                                                <span class="invalid-feedback">{{ $message }}</span>
+                                            @enderror
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label for="description">{{ __('Description') }}</label>
+                                            <textarea name="description"
+                                                      class="form-control @error('description') is-invalid @enderror"
+                                                      id="description"
+                                                      rows="6"
+                                                      placeholder="Enter article content">{{ old('description') }}</textarea>
+                                            @error('description')
+                                                <span class="invalid-feedback">{{ $message }}</span>
+                                            @enderror
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="image">{{ __('Featured Image') }}</label>
+                                            <input type="file"
+                                                   name="image"
+                                                   class="form-control @error('image') is-invalid @enderror"
+                                                   id="image"
+                                                   accept="image/*">
+                                            <small class="text-muted">Max 2MB (JPG, PNG, GIF, SVG)</small>
+                                            @error('image')
+                                                <span class="invalid-feedback">{{ $message }}</span>
+                                            @enderror
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="alert alert-info mt-3">
+                                    <i class="fas fa-info-circle"></i>
+                                    <strong>Note:</strong> Slug will be automatically generated from the article title.
+                                </div>
+
+                                <div class="form-group mt-4">
+                                    <button type="submit" class="btn btn-primary btn-lg">
+                                        <i class="fas fa-save"></i> {{ __('Create Article') }}
+                                    </button>
+                                    <a href="{{ route('blog.article.view', $category->id) }}" class="btn btn-secondary btn-lg">
+                                        <i class="fas fa-times"></i> {{ __('Cancel') }}
+                                    </a>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 </div>
-@endsection
-
-@section('bottom_script')
-
-<!-- CKEditor -->
-<script src="https://cdn.ckeditor.com/ckeditor5/29.1.0/classic/ckeditor.js"></script>
-<script>
-  // CKEditor configuration //
-  ClassicEditor.create(document.querySelector("#editor"))
-      .then((editor) => {
-          console.log(editor);
-      })
-      .catch((error) => {
-          console.error(error);
-      });
-  // END / CKEditor configuration //
-</script>
 @endsection

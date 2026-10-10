@@ -18,7 +18,7 @@ class UserTableSeeder extends Seeder
   public function run()
   {
     $adminRole = Role::where('slug', '=', 'admin')->first();
-    $userRole = Role::where('slug', '=', 'user')->first();
+    $userRole = Role::where('slug', '=', 'student')->first();
 
     $permissions = Permission::all();
 
